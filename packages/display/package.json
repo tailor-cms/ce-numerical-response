@@ -1,6 +1,5 @@
 {
   "name": "@tailor-cms/ce-numerical-response-display",
-  "private": true,
   "type": "module",
   "version": "0.0.1",
   "exports": {
