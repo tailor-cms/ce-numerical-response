@@ -1,7 +1,7 @@
 <template>
   <VForm
     ref="form"
-    class="tce-container my-4"
+    class="tce-numerical-response my-4"
     validate-on="submit"
     @submit.prevent="save"
   >
@@ -54,7 +54,7 @@
         </VCol>
       </VRow>
     </VSlideYTransition>
-    <div class="d-flex justify-center align-center mb-2">
+    <div class="d-flex justify-center align-center mb-12">
       <VBtn
         v-if="!isDisabled"
         class="mt-4"
@@ -67,6 +67,13 @@
         Add Answer
       </VBtn>
     </div>
+    <VTextField
+      v-model="elementData.hint"
+      :clearable="!isDisabled"
+      :readonly="isDisabled"
+      placeholder="Optional hint..."
+      variant="outlined"
+    />
     <div v-if="!isDisabled" class="d-flex justify-end">
       <VBtn
         :disabled="isDirty"
@@ -150,7 +157,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.tce-container {
+.tce-numerical-response {
   text-align: left;
 }
 </style>
