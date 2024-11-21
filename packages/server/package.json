@@ -1,6 +1,6 @@
 {
   "name": "@tailor-cms/ce-numerical-response-server",
-  "description": "Tailor CMS numerical response element",
+  "description": "Tailor CMS numerical response server component",
   "author": "Studion <info@gostudion.hr> (https://github.com/tailor-cms)",
   "type": "module",
   "version": "0.0.1",

@@ -1,5 +1,7 @@
 {
   "name": "@tailor-cms/ce-numerical-response-display",
+  "description": "Tailor CMS numerical response end-user component",
+  "author": "Studion <info@gostudion.hr> (https://github.com/tailor-cms)",
   "type": "module",
   "version": "0.0.1",
   "exports": {
@@ -33,8 +35,6 @@
   "dependencies": {
     "lodash": "^4.17.21"
   },
-  "description": "Tailor CMS numerical response element",
-  "author": "Studion <info@gostudion.hr> (https://github.com/tailor-cms)",
   "publishConfig": {
     "access": "public"
   }

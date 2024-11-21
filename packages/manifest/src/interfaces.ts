@@ -4,6 +4,7 @@ export interface ElementData {
   prefixes: string[];
   suffixes: string[];
   correct: string[];
+  hint: string;
 }
 
 export interface Element {
