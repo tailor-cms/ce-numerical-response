@@ -1,18 +1,17 @@
 <template>
   <VForm
     ref="form"
-    class="tce-container"
+    class="tce-container my-4"
     validate-on="submit"
     @submit.prevent="save"
   >
-    <VTextarea
+    <RichTextEditor
       v-model="elementData.question"
       :readonly="isDisabled"
       :rules="[requiredRule]"
       class="my-3"
       label="Question"
-      rows="3"
-      auto-grow
+      variant="outlined"
     />
     <div class="text-subtitle-2 mb-2">Answers</div>
     <VSlideYTransition group>
@@ -22,6 +21,7 @@
             v-model="elementData.prefixes[index]"
             :readonly="isDisabled"
             placeholder="Prefix..."
+            variant="outlined"
           />
         </VCol>
         <VCol :cols="canRemoveAnswer ? 5 : 6">
@@ -30,6 +30,7 @@
             :readonly="isDisabled"
             :rules="[requiredRule]"
             placeholder="Correct value..."
+            variant="outlined"
           />
         </VCol>
         <VCol cols="3">
@@ -37,12 +38,14 @@
             v-model="elementData.suffixes[index]"
             :readonly="isDisabled"
             placeholder="Suffix..."
+            variant="outlined"
           />
         </VCol>
         <VCol v-if="canRemoveAnswer" cols="1">
           <VBtn
             aria-label="Remove answer"
             class="my-2"
+            color="primary-darken-4"
             density="comfortable"
             icon="mdi-close"
             variant="text"
@@ -55,6 +58,7 @@
       <VBtn
         v-if="!isDisabled"
         class="mt-4"
+        color="primary-darken-4"
         prepend-icon="mdi-plus"
         variant="text"
         rounded
@@ -64,8 +68,21 @@
       </VBtn>
     </div>
     <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn :disabled="isDirty" variant="text" @click="cancel">Cancel</VBtn>
-      <VBtn :disabled="isDirty" class="ml-2" type="submit" variant="tonal">
+      <VBtn
+        :disabled="isDirty"
+        color="primary-darken-4"
+        variant="text"
+        @click="cancel"
+      >
+        Cancel
+      </VBtn>
+      <VBtn
+        :disabled="isDirty"
+        class="ml-2"
+        color="primary-darken-3"
+        type="submit"
+        variant="tonal"
+      >
         Save
       </VBtn>
     </div>
@@ -81,6 +98,7 @@ import {
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import pullAt from 'lodash/pullAt';
+import { RichTextEditor } from '@tailor-cms/core-components';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
