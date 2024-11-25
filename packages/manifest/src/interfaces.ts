@@ -32,6 +32,7 @@ export interface ElementManifest {
   version: string;
   name: string;
   ssr: boolean;
+  isQuestion: boolean;
   initState: DataInitializer;
   Edit?: object;
   TopToolbar?: object;
