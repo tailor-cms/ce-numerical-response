@@ -67,10 +67,3 @@ watch(
   { deep: true },
 );
 </script>
-
-<style scoped>
-.tce-root {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1rem;
-}
-</style>
