@@ -14,48 +14,50 @@
   >
     <div class="text-subtitle-2 mb-2">Answers</div>
     <VSlideYTransition group>
-      <VRow v-for="(_, index) in elementData.correct" :key="index">
-        <VCol cols="3">
-          <VTextField
-            v-model="elementData.prefixes[index]"
-            :readonly="isDisabled"
-            placeholder="Prefix..."
-            variant="outlined"
-          />
-        </VCol>
-        <VCol :cols="canRemoveAnswer ? 5 : 6">
-          <VTextField
-            v-model="elementData.correct[index]"
-            :readonly="isDisabled"
-            :rules="[requiredRule]"
-            placeholder="Correct value..."
-            variant="outlined"
-          />
-        </VCol>
-        <VCol cols="3">
-          <VTextField
-            v-model="elementData.suffixes[index]"
-            :readonly="isDisabled"
-            placeholder="Suffix..."
-            variant="outlined"
-          />
-        </VCol>
-        <VCol v-if="canRemoveAnswer" cols="1">
-          <VBtn
-            aria-label="Remove answer"
-            class="my-2"
-            color="primary-darken-4"
-            size="x-small"
-            variant="text"
-            icon
-            @click="removeAnswer(index)"
-          >
-            <VIcon icon="mdi-close" size="large" />
-          </VBtn>
-        </VCol>
-      </VRow>
+      <div v-for="(_, i) in elementData.correct" :key="i" class="d-flex mb-2">
+        <VRow>
+          <VCol cols="3">
+            <VTextField
+              v-model="elementData.prefixes[i]"
+              :readonly="isDisabled"
+              placeholder="Prefix..."
+              variant="outlined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <VTextField
+              v-model="elementData.correct[i]"
+              :readonly="isDisabled"
+              :rules="[(val: number) => !!val || 'Value is required']"
+              placeholder="Correct value..."
+              variant="outlined"
+              type="number"
+            />
+          </VCol>
+          <VCol cols="3">
+            <VTextField
+              v-model="elementData.suffixes[i]"
+              :readonly="isDisabled"
+              placeholder="Suffix..."
+              variant="outlined"
+            />
+          </VCol>
+        </VRow>
+        <VBtn
+          v-if="canRemoveAnswer"
+          class="my-3 ml-4"
+          aria-label="Remove answer"
+          color="primary-darken-4"
+          size="x-small"
+          variant="text"
+          icon
+          @click="removeAnswer(i)"
+        >
+          <VIcon icon="mdi-close" size="large" />
+        </VBtn>
+      </div>
     </VSlideYTransition>
-    <div v-if="!isDisabled" class="d-flex justify-center mt-4 mb-12">
+    <div v-if="!isDisabled" class="d-flex justify-center mb-4">
       <VBtn
         color="primary-darken-4"
         prepend-icon="mdi-plus"
@@ -90,8 +92,8 @@ const props = defineProps<{
 
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
-const answersCount = computed(() => elementData.correct.length);
 const isDirty = computed(() => !isEqual(elementData, props.element.data));
+const answersCount = computed(() => elementData.correct.length);
 const canRemoveAnswer = computed(
   () => !props.isDisabled && answersCount.value > 1,
 );
@@ -110,10 +112,6 @@ const removeAnswer = (index: number) => {
 };
 
 const save = () => emit('save', elementData);
-
-const requiredRule = (val: string | boolean | number) => {
-  return !!val || 'The field is required';
-};
 
 const updateData = (data: ElementData) => {
   Object.assign(elementData, cloneDeep(data));
