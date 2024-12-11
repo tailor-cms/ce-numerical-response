@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
+import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
 import {
   Element,
   ElementData,
