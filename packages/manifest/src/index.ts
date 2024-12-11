@@ -13,7 +13,8 @@ export const name = 'Numerical Response';
 // Function which inits element state (data property on the Content Element
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
-  question: '',
+  embeds: {},
+  question: [],
   prefixes: [''],
   suffixes: [''],
   correct: [''],
@@ -37,6 +38,7 @@ const manifest: ElementManifest = {
   version: '1.0',
   name,
   ssr: false,
+  isComposite: true,
   isQuestion: true,
   initState,
   ui,

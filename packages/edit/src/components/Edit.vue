@@ -1,18 +1,17 @@
 <template>
-  <VForm
-    ref="form"
-    class="tce-numerical-response my-4"
-    validate-on="submit"
-    @submit.prevent="save"
+  <QuestionContainer
+    v-bind="{
+      allowedEmbedTypes,
+      elementData,
+      isDirty,
+      isDisabled,
+      isGradeable,
+    }"
+    :show-feedback="false"
+    @cancel="updateData(element.data)"
+    @save="save"
+    @update="updateData($event)"
   >
-    <div class="text-subtitle-2 mb-2">Question</div>
-    <RichTextEditor
-      v-model="elementData.question"
-      :readonly="isDisabled"
-      :rules="[requiredRule]"
-      class="my-3"
-      variant="outlined"
-    />
     <div class="text-subtitle-2 mb-2">Answers</div>
     <VSlideYTransition group>
       <VRow v-for="(_, index) in elementData.correct" :key="index">
@@ -46,11 +45,13 @@
             aria-label="Remove answer"
             class="my-2"
             color="primary-darken-4"
-            density="comfortable"
-            icon="mdi-close"
+            size="x-small"
             variant="text"
+            icon
             @click="removeAnswer(index)"
-          />
+          >
+            <VIcon icon="mdi-close" size="large" />
+          </VBtn>
         </VCol>
       </VRow>
     </VSlideYTransition>
@@ -64,34 +65,7 @@
         Add Answer
       </VBtn>
     </div>
-    <div class="text-subtitle-2 mb-2">Hint</div>
-    <VTextField
-      v-model="elementData.hint"
-      :clearable="!isDisabled"
-      :readonly="isDisabled"
-      placeholder="Optional hint..."
-      variant="outlined"
-    />
-    <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn
-        :disabled="isDirty"
-        color="primary-darken-4"
-        variant="text"
-        @click="cancel"
-      >
-        Cancel
-      </VBtn>
-      <VBtn
-        :disabled="isDirty"
-        class="ml-2"
-        color="primary-darken-3"
-        type="submit"
-        variant="tonal"
-      >
-        Save
-      </VBtn>
-    </div>
-  </VForm>
+  </QuestionContainer>
 </template>
 
 <script lang="ts" setup>
@@ -103,20 +77,21 @@ import {
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import pullAt from 'lodash/pullAt';
-import { RichTextEditor } from '@tailor-cms/core-components';
+import { QuestionContainer } from '@tailor-cms/core-components';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
+  allowedEmbedTypes: string[];
   element: Element;
   isFocused: boolean;
   isDisabled: boolean;
+  isGradeable: boolean;
 }>();
 
-const form = ref<HTMLFormElement>();
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
 const answersCount = computed(() => elementData.correct.length);
-const isDirty = computed(() => isEqual(elementData, props.element.data));
+const isDirty = computed(() => !isEqual(elementData, props.element.data));
 const canRemoveAnswer = computed(
   () => !props.isDisabled && answersCount.value > 1,
 );
@@ -134,28 +109,15 @@ const removeAnswer = (index: number) => {
   pullAt(elementData.correct, index);
 };
 
-const save = async () => {
-  const { valid } = await form.value?.validate();
-  if (valid) emit('save', elementData);
-};
-
-const cancel = () => {
-  Object.assign(elementData, cloneDeep(props.element.data));
-  form.value?.resetValidation();
-};
+const save = () => emit('save', elementData);
 
 const requiredRule = (val: string | boolean | number) => {
   return !!val || 'The field is required';
 };
 
-watch(
-  () => props.element.data,
-  (data) => Object.assign(elementData, cloneDeep(data)),
-);
-</script>
+const updateData = (data: ElementData) => {
+  Object.assign(elementData, cloneDeep(data));
+};
 
-<style lang="scss" scoped>
-.tce-numerical-response {
-  text-align: left;
-}
-</style>
+watch(() => props.element.data, updateData);
+</script>
