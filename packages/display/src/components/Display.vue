@@ -19,13 +19,13 @@
       :suffix="sufix"
       class="my-3"
       label="Answer"
-      variant="outlined"
       type="number"
+      variant="outlined"
     >
       <template v-if="isSubmitted" #append>
         <VIcon
-          :icon="`mdi-${isCorrect(index) ? 'check' : 'close'}-circle`"
           :color="isCorrect(index) ? 'success' : 'error'"
+          :icon="`mdi-${isCorrect(index) ? 'check' : 'close'}-circle`"
         />
       </template>
     </VTextField>
@@ -36,8 +36,8 @@
 import { computed, ref, watch } from 'vue';
 import cloneDeep from 'lodash/cloneDeep';
 import { ElementData } from '@tailor-cms/ce-numerical-response-manifest';
-import zip from 'lodash/zip';
 import { QuestionContainer } from '@tailor-cms/lx-components';
+import zip from 'lodash/zip';
 
 const initializeResponse = () =>
   cloneDeep(props.userState?.response) ??
@@ -56,7 +56,7 @@ const submit = () => emit('interaction', { response: response.value });
 const isCorrect = (index: number) => {
   const { response, correct } = props.userState;
   return response?.[index] === correct?.[index];
-}
+};
 
 watch(
   () => props.userState,

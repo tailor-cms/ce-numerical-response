@@ -30,8 +30,8 @@
               :readonly="isDisabled"
               :rules="[(val: number) => !!val || 'Value is required']"
               placeholder="Correct value..."
-              variant="outlined"
               type="number"
+              variant="outlined"
             />
           </VCol>
           <VCol cols="3">
@@ -45,8 +45,8 @@
         </VRow>
         <VBtn
           v-if="canRemoveAnswer"
-          class="my-3 ml-4"
           aria-label="Remove answer"
+          class="my-3 ml-4"
           color="primary-darken-4"
           size="x-small"
           variant="text"
