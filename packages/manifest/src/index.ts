@@ -40,6 +40,7 @@ const manifest: ElementManifest = {
   ssr: false,
   isComposite: true,
   isQuestion: true,
+  isGradable: true,
   initState,
   ui,
 };

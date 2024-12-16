@@ -1,11 +1,12 @@
 <template>
   <QuestionContainer
     v-bind="{
-      allowedEmbedTypes,
+      type: manifest.name,
+      icon: manifest.ui.icon,
+      embedTypes,
       elementData,
       isDirty,
       isDisabled,
-      isGradeable,
     }"
     :show-feedback="false"
     @cancel="updateData(element.data)"
@@ -72,7 +73,7 @@
 
 <script lang="ts" setup>
 import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
-import {
+import manifest, {
   Element,
   ElementData,
 } from '@tailor-cms/ce-numerical-response-manifest';
@@ -83,11 +84,10 @@ import { QuestionContainer } from '@tailor-cms/core-components';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
-  allowedEmbedTypes: string[];
+  embedTypes: any[];
   element: Element;
   isFocused: boolean;
   isDisabled: boolean;
-  isGradeable: boolean;
 }>();
 
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
