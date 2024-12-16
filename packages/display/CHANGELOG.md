@@ -1,5 +1,11 @@
 # @tailor-cms/ce-numerical-response-display
 
+## 0.0.3
+
+### Patch Changes
+
+- Refactored isGradable handling, by storing it directly in element data.
+
 ## 0.0.2
 
 ### Patch Changes
