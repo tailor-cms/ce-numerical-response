@@ -13,10 +13,12 @@ export const name = 'Numerical Response';
 // Function which inits element state (data property on the Content Element
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
-  question: '',
+  embeds: {},
+  question: [],
   prefixes: [''],
   suffixes: [''],
   correct: [''],
+  hint: '',
 });
 
 // Can be loaded from package.json
@@ -31,18 +33,16 @@ const ui = {
   forceFullWidth: true,
 };
 
-export const mocks = {
-  displayContexts: [{ name: 'No selection', data: {} }],
-};
-
 const manifest: ElementManifest = {
   type,
   version: '1.0',
   name,
   ssr: false,
+  isComposite: true,
+  isQuestion: true,
+  isGradable: true,
   initState,
   ui,
-  mocks,
 };
 
 export default manifest;

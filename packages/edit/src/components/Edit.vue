@@ -1,99 +1,99 @@
 <template>
-  <VForm
-    ref="form"
-    class="tce-container"
-    validate-on="submit"
-    @submit.prevent="save"
+  <QuestionContainer
+    v-bind="{
+      type: manifest.name,
+      icon: manifest.ui.icon,
+      embedTypes,
+      elementData,
+      isDirty,
+      isDisabled,
+    }"
+    :show-feedback="false"
+    @cancel="updateData(element.data)"
+    @save="save"
+    @update="updateData($event)"
   >
-    <VTextarea
-      v-model="elementData.question"
-      :readonly="isDisabled"
-      :rules="[requiredRule]"
-      class="my-3"
-      label="Question"
-      rows="3"
-      auto-grow
-    />
     <div class="text-subtitle-2 mb-2">Answers</div>
     <VSlideYTransition group>
-      <VRow v-for="(_, index) in elementData.correct" :key="index">
-        <VCol cols="3">
-          <VTextField
-            v-model="elementData.prefixes[index]"
-            :readonly="isDisabled"
-            placeholder="Prefix..."
-          />
-        </VCol>
-        <VCol :cols="canRemoveAnswer ? 5 : 6">
-          <VTextField
-            v-model="elementData.correct[index]"
-            :readonly="isDisabled"
-            :rules="[requiredRule]"
-            placeholder="Correct value..."
-          />
-        </VCol>
-        <VCol cols="3">
-          <VTextField
-            v-model="elementData.suffixes[index]"
-            :readonly="isDisabled"
-            placeholder="Suffix..."
-          />
-        </VCol>
-        <VCol v-if="canRemoveAnswer" cols="1">
-          <VBtn
-            aria-label="Remove answer"
-            class="my-2"
-            density="comfortable"
-            icon="mdi-close"
-            variant="text"
-            @click="removeAnswer(index)"
-          />
-        </VCol>
-      </VRow>
+      <div v-for="(_, i) in elementData.correct" :key="i" class="d-flex mb-2">
+        <VRow>
+          <VCol cols="3">
+            <VTextField
+              v-model="elementData.prefixes[i]"
+              :readonly="isDisabled"
+              placeholder="Prefix..."
+              variant="outlined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <VTextField
+              v-model="elementData.correct[i]"
+              :readonly="isDisabled"
+              :rules="[(val: number) => !!val || 'Value is required']"
+              placeholder="Correct value..."
+              type="number"
+              variant="outlined"
+            />
+          </VCol>
+          <VCol cols="3">
+            <VTextField
+              v-model="elementData.suffixes[i]"
+              :readonly="isDisabled"
+              placeholder="Suffix..."
+              variant="outlined"
+            />
+          </VCol>
+        </VRow>
+        <VBtn
+          v-if="canRemoveAnswer"
+          aria-label="Remove answer"
+          class="my-3 ml-4"
+          color="primary-darken-4"
+          size="x-small"
+          variant="text"
+          icon
+          @click="removeAnswer(i)"
+        >
+          <VIcon icon="mdi-close" size="large" />
+        </VBtn>
+      </div>
     </VSlideYTransition>
-    <div class="d-flex justify-center align-center mb-2">
+    <div v-if="!isDisabled" class="d-flex justify-center mb-4">
       <VBtn
-        v-if="!isDisabled"
-        class="mt-4"
+        color="primary-darken-4"
         prepend-icon="mdi-plus"
         variant="text"
-        rounded
         @click="addAnswer"
       >
         Add Answer
       </VBtn>
     </div>
-    <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn :disabled="isDirty" variant="text" @click="cancel">Cancel</VBtn>
-      <VBtn :disabled="isDirty" class="ml-2" type="submit" variant="tonal">
-        Save
-      </VBtn>
-    </div>
-  </VForm>
+  </QuestionContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
-import {
+import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
+import manifest, {
   Element,
   ElementData,
 } from '@tailor-cms/ce-numerical-response-manifest';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import pullAt from 'lodash/pullAt';
+import { QuestionContainer } from '@tailor-cms/core-components';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
+  embedTypes: any[];
   element: Element;
   isFocused: boolean;
   isDisabled: boolean;
 }>();
 
-const form = ref<HTMLFormElement>();
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
+const isDirty = computed(() => !isEqual(elementData, props.element.data));
 const answersCount = computed(() => elementData.correct.length);
-const isDirty = computed(() => isEqual(elementData, props.element.data));
 const canRemoveAnswer = computed(
   () => !props.isDisabled && answersCount.value > 1,
 );
@@ -111,28 +111,11 @@ const removeAnswer = (index: number) => {
   pullAt(elementData.correct, index);
 };
 
-const save = async () => {
-  const { valid } = await form.value?.validate();
-  if (valid) emit('save', elementData);
+const save = () => emit('save', elementData);
+
+const updateData = (data: ElementData) => {
+  Object.assign(elementData, cloneDeep(data));
 };
 
-const cancel = () => {
-  Object.assign(elementData, cloneDeep(props.element.data));
-  form.value?.resetValidation();
-};
-
-const requiredRule = (val: string | boolean | number) => {
-  return !!val || 'The field is required';
-};
-
-watch(
-  () => props.element.data,
-  (data) => Object.assign(elementData, cloneDeep(data)),
-);
+watch(() => props.element.data, updateData);
 </script>
-
-<style lang="scss" scoped>
-.tce-container {
-  text-align: left;
-}
-</style>

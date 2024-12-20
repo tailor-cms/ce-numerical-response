@@ -1,9 +1,11 @@
-// Example counter component
 export interface ElementData {
-  question: string;
+  isGradable?: boolean;
+  embeds: Record<string, any>;
+  question: string[];
   prefixes: string[];
   suffixes: string[];
   correct: string[];
+  hint: string;
 }
 
 export interface Element {
@@ -32,6 +34,9 @@ export interface ElementManifest {
   version: string;
   name: string;
   ssr: boolean;
+  isComposite: boolean;
+  isQuestion: boolean;
+  isGradable: boolean;
   initState: DataInitializer;
   Edit?: object;
   TopToolbar?: object;
