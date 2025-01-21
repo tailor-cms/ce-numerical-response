@@ -3,7 +3,7 @@
   "description": "Tailor CMS numerical response authoring component",
   "author": "Studion <info@gostudion.hr> (https://github.com/tailor-cms)",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -33,7 +33,7 @@
     "vue-tsc": "^1.8.5"
   },
   "dependencies": {
-    "@tailor-cms/core-components": "^1.0.24",
+    "@tailor-cms/core-components": "^1.0.26",
     "lodash": "^4.17.21"
   },
   "publishConfig": {
