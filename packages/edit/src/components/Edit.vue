@@ -1,17 +1,12 @@
 <template>
   <QuestionContainer
     v-bind="{
-      type: manifest.name,
-      icon: manifest.ui.icon,
       elementData,
       embedElementConfig,
-      isDirty,
       isDisabled,
     }"
     :show-feedback="false"
-    @cancel="updateData(element.data)"
-    @save="save"
-    @update="updateData($event)"
+    @update="emit('update', $event)"
   >
     <div class="text-subtitle-2 mb-2">Answers</div>
     <VSlideYTransition group>
@@ -19,28 +14,31 @@
         <VRow>
           <VCol cols="3">
             <VTextField
-              v-model="elementData.prefixes[i]"
+              :model-value="elementData.prefixes[i]"
               :readonly="isDisabled"
               placeholder="Prefix..."
               variant="outlined"
+              @update:model-value="updateAnswer('prefixes', $event, i)"
             />
           </VCol>
           <VCol cols="6">
             <VTextField
-              v-model="elementData.correct[i]"
+              :model-value="elementData.correct[i]"
               :readonly="isDisabled"
               :rules="[(val: number) => !!val || 'Value is required']"
               placeholder="Correct value..."
               type="number"
               variant="outlined"
+              @update:model-value="updateAnswer('correct', $event, i)"
             />
           </VCol>
           <VCol cols="3">
             <VTextField
-              v-model="elementData.suffixes[i]"
+              :model-value="elementData.suffixes[i]"
               :readonly="isDisabled"
               placeholder="Suffix..."
               variant="outlined"
+              @update:model-value="updateAnswer('suffixes', $event, i)"
             />
           </VCol>
         </VRow>
@@ -72,50 +70,55 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
-import manifest, {
-  Element,
-  ElementData,
-} from '@tailor-cms/ce-numerical-response-manifest';
+import { computed, defineEmits, defineProps } from 'vue';
 import cloneDeep from 'lodash/cloneDeep';
-import isEqual from 'lodash/isEqual';
+import { Element } from '@tailor-cms/ce-numerical-response-manifest';
+import last from 'lodash/last';
 import pullAt from 'lodash/pullAt';
 import { QuestionContainer } from '@tailor-cms/core-components';
+import toNumber from 'lodash/toNumber';
 
-const emit = defineEmits(['save']);
 const props = defineProps<{
   element: Element;
   embedElementConfig: any[];
   isFocused: boolean;
   isDisabled: boolean;
 }>();
+const emit = defineEmits(['save', 'update']);
 
-const elementData = reactive<ElementData>(cloneDeep(props.element.data));
-
-const isDirty = computed(() => !isEqual(elementData, props.element.data));
-const answersCount = computed(() => elementData.correct.length);
+const elementData = computed(() => props.element.data);
 const canRemoveAnswer = computed(
-  () => !props.isDisabled && answersCount.value > 1,
+  () => !props.isDisabled && elementData.value.correct.length > 1,
 );
 
 const addAnswer = () => {
-  elementData.prefixes.push('');
-  elementData.suffixes.push('');
-  elementData.correct.push('');
+  const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
+  prefixes.push('');
+  suffixes.push('');
+  correct.push('');
+  emit('update', { correct, prefixes, suffixes });
+};
+
+const updateAnswer = (
+  key: 'prefixes' | 'correct' | 'suffixes',
+  value: any,
+  index: number,
+) => {
+  if (key === 'correct') {
+    if (last(value) === '.') return;
+    value = toNumber(value) || value;
+  }
+  const values = cloneDeep(elementData.value[key]);
+  values[index] = value;
+  emit('update', { [key]: values });
 };
 
 const removeAnswer = (index: number) => {
-  if (elementData.correct.length <= 1) return;
-  pullAt(elementData.prefixes, index);
-  pullAt(elementData.suffixes, index);
-  pullAt(elementData.correct, index);
+  if (elementData.value.correct.length <= 1) return;
+  const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
+  pullAt(prefixes, index);
+  pullAt(suffixes, index);
+  pullAt(correct, index);
+  emit('update', { correct, prefixes, suffixes });
 };
-
-const save = () => emit('save', elementData);
-
-const updateData = (data: ElementData) => {
-  Object.assign(elementData, cloneDeep(data));
-};
-
-watch(() => props.element.data, updateData);
 </script>
