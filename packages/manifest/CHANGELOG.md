@@ -1,5 +1,11 @@
 # @tailor-cms/ce-numerical-response-manifest
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated package to follow new question element component composition.
+
 ## 0.0.5
 
 ### Patch Changes
