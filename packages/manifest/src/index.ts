@@ -14,7 +14,6 @@ export const name = 'Numerical Response';
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
   embeds: {},
-  question: [],
   prefixes: [''],
   suffixes: [''],
   correct: [''],
