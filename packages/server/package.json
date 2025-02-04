@@ -3,7 +3,7 @@
   "description": "Tailor CMS numerical response server component",
   "author": "Studion <info@gostudion.hr> (https://github.com/tailor-cms)",
   "type": "module",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "exports": {
     ".": {
       "import": "./dist/index.js",

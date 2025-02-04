@@ -1,5 +1,11 @@
 # @tailor-cms/ce-numerical-response-display
 
+## 0.0.9
+
+### Patch Changes
+
+- Revert to old structutre with question prop.
+
 ## 0.0.8
 
 ### Patch Changes
