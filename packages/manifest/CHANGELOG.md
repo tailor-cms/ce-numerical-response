@@ -1,5 +1,11 @@
 # @tailor-cms/ce-numerical-response-manifest
 
+## 0.0.8
+
+### Patch Changes
+
+- Bumped core-components package.
+
 ## 0.0.7
 
 ### Patch Changes
