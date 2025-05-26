@@ -3,7 +3,7 @@
   "description": "Tailor CMS numerical response end-user component",
   "author": "Studion <info@gostudion.hr> (https://github.com/tailor-cms)",
   "type": "module",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "exports": {
     ".": {
       "import": "./dist/index.js",
