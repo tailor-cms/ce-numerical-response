@@ -1,6 +1,6 @@
 <template>
   <QuestionContainer
-    :data="data"
+    :data="element.data"
     :is-correct="userState.isCorrect"
     :is-submitted="isSubmitted"
     allowed-retake
@@ -33,23 +33,24 @@
 </template>
 
 <script setup lang="ts">
+import { cloneDeep, zip } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
-import cloneDeep from 'lodash/cloneDeep';
-import { ElementData } from '@tailor-cms/ce-numerical-response-manifest';
+import { Element } from '@tailor-cms/ce-numerical-response-manifest';
 import { QuestionContainer } from '@tailor-cms/lx-components';
-import zip from 'lodash/zip';
 
 const initializeResponse = () =>
   cloneDeep(props.userState?.response) ??
-  Array(props.data.prefixes.length).fill('');
+  Array(props.element.data.prefixes.length).fill('');
 
-const props = defineProps<{ id: number; data: ElementData; userState: any }>();
+const props = defineProps<{ element: Element; userState: any }>();
 const emit = defineEmits(['interaction']);
 
 const isSubmitted = ref(!!props.userState.isSubmitted);
 const response = ref<string[]>(initializeResponse());
 
-const items = computed(() => zip(props.data.prefixes, props.data.suffixes));
+const items = computed(() =>
+  zip(props.element.data.prefixes, props.element.data.suffixes),
+);
 
 const submit = () => emit('interaction', { response: response.value });
 
