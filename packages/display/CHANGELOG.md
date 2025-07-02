@@ -1,5 +1,11 @@
 # @tailor-cms/ce-numerical-response-display
 
+## 0.0.10
+
+### Patch Changes
+
+- Bumped to the latest tce-boot and core-components version and migrated code accordingly.
+
 ## 0.0.9
 
 ### Patch Changes
