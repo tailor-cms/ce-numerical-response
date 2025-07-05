@@ -8,8 +8,7 @@
     @retry="isSubmitted = false"
     @submit="submit"
   >
-    <div class="text-subtitle-2 mb-2">Enter your numeric answers:</div>
-    <VTextField
+    <VNumberInput
       v-for="([prefix, sufix], index) in items"
       :key="index"
       v-model="response[index]"
@@ -17,18 +16,21 @@
       :readonly="isSubmitted"
       :rules="[(val: string) => !!val || 'You have to enter your answer']"
       :suffix="sufix"
-      class="my-3"
+      bg-color="white"
+      class="mt-4"
+      control-variant="stacked"
+      hide-details="auto"
       label="Answer"
       type="number"
       variant="outlined"
     >
-      <template v-if="isSubmitted" #append>
+      <template v-if="isSubmitted" #append-inner>
         <VIcon
           :color="isCorrect(index) ? 'success' : 'error'"
           :icon="`mdi-${isCorrect(index) ? 'check' : 'close'}-circle`"
         />
       </template>
-    </VTextField>
+    </VNumberInput>
   </QuestionContainer>
 </template>
 
@@ -40,7 +42,7 @@ import { QuestionContainer } from '@tailor-cms/lx-components';
 
 const initializeResponse = () =>
   cloneDeep(props.userState?.response) ??
-  Array(props.element.data.prefixes.length).fill('');
+  Array(props.element.data.prefixes.length).fill(0);
 
 const props = defineProps<{ element: Element; userState: any }>();
 const emit = defineEmits(['interaction']);
