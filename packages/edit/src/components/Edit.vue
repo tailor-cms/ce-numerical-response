@@ -18,10 +18,11 @@
             />
           </VCol>
           <VCol cols="6">
-            <VTextField
+            <VNumberInput
               :model-value="elementData.correct[i]"
               :readonly="isReadonly"
               :rules="[(val: number) => !!val || 'Value is required']"
+              control-variant="split"
               placeholder="Correct value..."
               type="number"
               variant="outlined"
