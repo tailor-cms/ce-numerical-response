@@ -6,7 +6,7 @@ export interface ElementData extends common.ElementConfig {
   question: string[];
   prefixes: string[];
   suffixes: string[];
-  correct: string[];
+  correct: number[];
   hint: string;
 }
 

@@ -1,6 +1,10 @@
+import {
+  ai,
+  initState,
+  type,
+} from '@tailor-cms/ce-numerical-response-manifest';
 import { every, omit } from 'lodash-es';
 import type { HookServices, ServerRuntime } from '@tailor-cms/cek-common';
-import { initState, type } from '@tailor-cms/ce-numerical-response-manifest';
 import type { Element } from '@tailor-cms/ce-numerical-response-manifest';
 
 // Detect if hooks are running in CEK (used for mocking end-system runtime)
@@ -36,13 +40,11 @@ export function afterRetrieve(
   return element;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function beforeDisplay(element: Element, context: any) {
   if (IS_CEK) USER_STATE.correct = element.data.correct;
   return { ...context, ...USER_STATE };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function onUserInteraction(
   element: Element,
   context: any,
@@ -86,6 +88,7 @@ export default {
   afterRetrieve,
   onUserInteraction,
   beforeDisplay,
+  ai,
 };
 
-export { type, initState };
+export { type, initState, ai };
