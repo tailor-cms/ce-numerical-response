@@ -91,9 +91,16 @@ export const ai = {
         into separate answers.
       - 'hint' is an optional hint for the correct solution
   `,
-  processResponse: (data: any) => {
+  processResponse: (val: any) => {
     const questionId = uuid();
-    const answers = data.answers.reduce(
+    const question = {
+      id: questionId,
+      data: { content: val.question },
+      embedded: true,
+      position: 1,
+      type: 'TIPTAP_HTML',
+    };
+    const answers = val.answers.reduce(
       (acc: Record<string, any>, { correct, prefix, suffix }: any) => {
         acc.prefixes.push(prefix || '');
         acc.suffixes.push(suffix || '');
@@ -104,18 +111,10 @@ export const ai = {
     );
     return {
       isGradable: true,
-      question: [questionId],
-      hint: data.hint || '',
+      hint: val.hint || '',
       ...answers,
-      embeds: {
-        [questionId]: {
-          id: questionId,
-          data: { content: data.question },
-          embedded: true,
-          position: 1,
-          type: 'TIPTAP_HTML',
-        },
-      },
+      question: [questionId],
+      embeds: { [questionId]: question },
     };
   },
 };
