@@ -90,7 +90,7 @@ const addAnswer = () => {
   const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
   prefixes.push('');
   suffixes.push('');
-  correct.push('');
+  correct.push(0);
   emit('update', { correct, prefixes, suffixes });
 };
 
