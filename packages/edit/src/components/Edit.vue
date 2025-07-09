@@ -1,6 +1,6 @@
 <template>
   <QuestionContainer
-    v-bind="{ elementData, embedElementConfig, isDisabled }"
+    v-bind="{ elementData, embedElementConfig, isReadonly }"
     :show-feedback="false"
     @update="emit('update', $event)"
   >
@@ -11,17 +11,18 @@
           <VCol cols="3">
             <VTextField
               :model-value="elementData.prefixes[i]"
-              :readonly="isDisabled"
+              :readonly="isReadonly"
               placeholder="Prefix..."
               variant="outlined"
               @update:model-value="updateAnswer('prefixes', $event, i)"
             />
           </VCol>
           <VCol cols="6">
-            <VTextField
+            <VNumberInput
               :model-value="elementData.correct[i]"
-              :readonly="isDisabled"
+              :readonly="isReadonly"
               :rules="[(val: number) => !!val || 'Value is required']"
+              control-variant="split"
               placeholder="Correct value..."
               type="number"
               variant="outlined"
@@ -31,7 +32,7 @@
           <VCol cols="3">
             <VTextField
               :model-value="elementData.suffixes[i]"
-              :readonly="isDisabled"
+              :readonly="isReadonly"
               placeholder="Suffix..."
               variant="outlined"
               @update:model-value="updateAnswer('suffixes', $event, i)"
@@ -52,7 +53,7 @@
         </VBtn>
       </div>
     </VSlideYTransition>
-    <div v-if="!isDisabled" class="d-flex justify-center mb-4">
+    <div v-if="!isReadonly" class="d-flex justify-center mb-4">
       <VBtn
         color="primary-darken-4"
         prepend-icon="mdi-plus"
@@ -66,32 +67,30 @@
 </template>
 
 <script lang="ts" setup>
+import { cloneDeep, last, pullAt, toNumber } from 'lodash-es';
 import { computed, defineEmits, defineProps } from 'vue';
-import cloneDeep from 'lodash/cloneDeep';
 import { Element } from '@tailor-cms/ce-numerical-response-manifest';
-import last from 'lodash/last';
-import pullAt from 'lodash/pullAt';
 import { QuestionContainer } from '@tailor-cms/core-components';
-import toNumber from 'lodash/toNumber';
 
 const props = defineProps<{
   element: Element;
   embedElementConfig: any[];
+  isDragged: boolean;
   isFocused: boolean;
-  isDisabled: boolean;
+  isReadonly: boolean;
 }>();
 const emit = defineEmits(['save', 'update']);
 
 const elementData = computed(() => props.element.data);
 const canRemoveAnswer = computed(
-  () => !props.isDisabled && elementData.value.correct.length > 1,
+  () => !props.isReadonly && elementData.value.correct.length > 1,
 );
 
 const addAnswer = () => {
   const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
   prefixes.push('');
   suffixes.push('');
-  correct.push('');
+  correct.push(0);
   emit('update', { correct, prefixes, suffixes });
 };
 

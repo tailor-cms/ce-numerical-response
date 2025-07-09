@@ -1,3 +1,6 @@
+import { OpenAISchema } from '@tailor-cms/cek-common';
+import { v4 as uuid } from 'uuid';
+
 import type {
   DataInitializer,
   ElementData,
@@ -17,7 +20,7 @@ export const initState: DataInitializer = (): ElementData => ({
   question: [],
   prefixes: [''],
   suffixes: [''],
-  correct: [''],
+  correct: [0],
   hint: '',
 });
 
@@ -33,6 +36,89 @@ const ui = {
   forceFullWidth: true,
 };
 
+export const ai = {
+  Schema: {
+    type: 'json_schema',
+    name: 'ce_numerical_response',
+    schema: {
+      type: 'object',
+      properties: {
+        question: { type: 'string' },
+        answers: {
+          type: 'array',
+          minItems: 1,
+          items: {
+            type: 'object',
+            properties: {
+              correct: { type: 'number' },
+              prefix: { type: 'string' },
+              suffix: { type: 'string' },
+            },
+            required: ['correct', 'prefix', 'suffix'],
+            additionalProperties: false,
+          },
+        },
+        hint: { type: 'string' },
+      },
+      required: ['question', 'hint', 'answers'],
+      additionalProperties: false,
+    },
+  } as OpenAISchema,
+  getPrompt: () => `
+    Generate a numerical response question as an object with the following
+    properties:
+    {
+      "question": "",
+      "answers": [
+        {
+          "correct": 0,
+          "prefix": "",
+          "suffix": "",
+        }
+      ]
+      "hint": "",
+    }
+    where:
+      - 'question' is the question prompt.
+      - 'answers' is an array of answer objects, where:
+        - 'correct' is a number representing the correct answer.
+        - 'prefix' is a string representing the prefix of the correct
+          number, such as a currency, unit of measurement, percentage, etc.
+        - 'suffix' is a string representing the suffix of the correct
+          number, such as a currency, unit of measurement, percentage, etc.
+        Suffix and prefix are optional. There can be multiple answers if the
+        correct answer consists of multiple numbers; in that case, split them
+        into separate answers.
+      - 'hint' is an optional hint for the correct solution
+  `,
+  processResponse: (val: any) => {
+    const questionId = uuid();
+    const question = {
+      id: questionId,
+      data: { content: val.question },
+      embedded: true,
+      position: 1,
+      type: 'TIPTAP_HTML',
+    };
+    const answers = val.answers.reduce(
+      (acc: Record<string, any>, { correct, prefix, suffix }: any) => {
+        acc.prefixes.push(prefix || '');
+        acc.suffixes.push(suffix || '');
+        acc.correct.push(correct);
+        return acc;
+      },
+      { prefixes: [], suffixes: [], correct: [] },
+    );
+    return {
+      isGradable: true,
+      hint: val.hint || '',
+      ...answers,
+      question: [questionId],
+      embeds: { [questionId]: question },
+    };
+  },
+};
+
 const manifest: ElementManifest = {
   type,
   version: '1.0',
@@ -43,6 +129,7 @@ const manifest: ElementManifest = {
   isGradable: true,
   initState,
   ui,
+  ai,
 };
 
 export default manifest;
