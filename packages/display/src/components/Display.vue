@@ -14,7 +14,9 @@
       v-model="response[index]"
       :prefix="prefix"
       :readonly="isSubmitted"
-      :rules="[(val: string) => !!val || 'You have to enter your answer']"
+      :rules="[
+        (val: number) => isNumber(val) || 'You have to enter your answer',
+      ]"
       :suffix="sufix"
       bg-color="white"
       class="mt-4"
@@ -35,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { cloneDeep, zip } from 'lodash-es';
+import { cloneDeep, isNumber, zip } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { Element } from '@tailor-cms/ce-numerical-response-manifest';
 import { QuestionContainer } from '@tailor-cms/lx-components';

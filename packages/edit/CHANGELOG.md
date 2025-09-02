@@ -1,5 +1,11 @@
 # @tailor-cms/ce-numerical-response-edit
 
+## 0.1.1
+
+### Patch Changes
+
+- Update input validation.
+
 ## 0.1.0
 
 ### Minor Changes

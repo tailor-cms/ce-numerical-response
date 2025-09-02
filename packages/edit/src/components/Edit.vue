@@ -21,7 +21,7 @@
             <VNumberInput
               :model-value="elementData.correct[i]"
               :readonly="isReadonly"
-              :rules="[(val: number) => !!val || 'Value is required']"
+              :rules="[(val: number) => isNumber(val) || 'Value is required']"
               control-variant="split"
               placeholder="Correct value..."
               type="number"
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { cloneDeep, last, pullAt, toNumber } from 'lodash-es';
+import { cloneDeep, isNumber, last, pullAt, toNumber } from 'lodash-es';
 import { computed, defineEmits, defineProps } from 'vue';
 import { Element } from '@tailor-cms/ce-numerical-response-manifest';
 import { QuestionContainer } from '@tailor-cms/core-components';
