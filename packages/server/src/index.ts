@@ -1,3 +1,9 @@
+import {
+  ai,
+  initState,
+  mocks,
+  type,
+} from '@tailor-cms/ce-numerical-response-manifest';
 import type {
   BeforeDisplayHook,
   ElementHook,
@@ -5,14 +11,8 @@ import type {
   OnUserInteractionHook,
   ServerModule,
 } from '@tailor-cms/cek-common';
-import {
-  ai,
-  initState,
-  mocks,
-  type,
-} from '@tailor-cms/ce-numerical-response-manifest';
-import type { Element } from '@tailor-cms/ce-numerical-response-manifest';
 import { every, omit } from 'lodash-es';
+import type { Element } from '@tailor-cms/ce-numerical-response-manifest';
 
 // Detect if hooks are running in CEK (used for mocking end-system runtime)
 const IS_CEK = process.env.CEK_RUNTIME;
@@ -59,8 +59,8 @@ export const onUserInteraction: OnUserInteractionHook<Element> = (
 export const hookMap: HookMap<Element> = new Map(
   Object.entries({
     afterLoaded,
-    onUserInteraction,
     beforeDisplay,
+    onUserInteraction,
   }),
 );
 
@@ -69,8 +69,8 @@ const serverModule: ServerModule<Element> = {
   initState,
   hookMap,
   afterLoaded,
-  onUserInteraction,
   beforeDisplay,
+  onUserInteraction,
   mocks,
   ai,
 };
