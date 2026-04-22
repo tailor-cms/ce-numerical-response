@@ -1,4 +1,7 @@
-import { OpenAISchema } from '@tailor-cms/cek-common';
+import type {
+  AiConfig,
+  ElementMocks,
+} from '@tailor-cms/cek-common';
 import { v4 as uuid } from 'uuid';
 
 import type {
@@ -15,17 +18,39 @@ export const name = 'Numerical Response';
 
 // Function which inits element state (data property on the Content Element
 // entity)
-export const initState: DataInitializer = (): ElementData => ({
-  embeds: {},
-  question: [],
-  prefixes: [''],
-  suffixes: [''],
-  correct: [0],
-  hint: '',
-});
+export const initState: DataInitializer = (config): ElementData => {
+  const isGradable = config?.isGradable ?? true;
+  return {
+    isGradable,
+    embeds: {},
+    question: [],
+    prefixes: [''],
+    suffixes: [''],
+    hint: '',
+    ...(isGradable && { correct: [0] }),
+  };
+};
 
 // Can be loaded from package.json
 export const version = '1.0';
+
+export const isEmpty = (data: ElementData): boolean =>
+  !data.question?.length && !data.prefixes?.some(Boolean) &&
+  !data.suffixes?.some(Boolean);
+
+export const mocks: ElementMocks = {
+  displayContexts: [
+    { name: 'No answer', data: {} },
+    {
+      name: 'Correct answer',
+      data: { response: [0], isCorrect: true, isSubmitted: true },
+    },
+    {
+      name: 'Wrong answer',
+      data: { response: [1], isCorrect: false, isSubmitted: true },
+    },
+  ],
+};
 
 // UI configuration for Tailor CMS
 const ui = {
@@ -36,7 +61,7 @@ const ui = {
   forceFullWidth: true,
 };
 
-export const ai = {
+export const ai: AiConfig = {
   Schema: {
     type: 'json_schema',
     name: 'ce_numerical_response',
@@ -63,7 +88,7 @@ export const ai = {
       required: ['question', 'hint', 'answers'],
       additionalProperties: false,
     },
-  } as OpenAISchema,
+  },
   getPrompt: () => `
     Generate a numerical response question as an object with the following
     properties:
@@ -121,15 +146,18 @@ export const ai = {
 
 const manifest: ElementManifest = {
   type,
-  version: '1.0',
+  version,
   name,
   ssr: false,
   isComposite: true,
   isQuestion: true,
   isGradable: true,
+  showFeedback: false,
   initState,
+  isEmpty,
   ui,
   ai,
+  mocks,
 };
 
 export default manifest;
