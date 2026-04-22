@@ -1,7 +1,4 @@
-import type {
-  AiConfig,
-  ElementMocks,
-} from '@tailor-cms/cek-common';
+import type { AiConfig, ElementMocks } from '@tailor-cms/cek-common';
 import { v4 as uuid } from 'uuid';
 
 import type {
@@ -35,7 +32,8 @@ export const initState: DataInitializer = (config): ElementData => {
 export const version = '1.0';
 
 export const isEmpty = (data: ElementData): boolean =>
-  !data.question?.length && !data.prefixes?.some(Boolean) &&
+  !data.question?.length &&
+  !data.prefixes?.some(Boolean) &&
   !data.suffixes?.some(Boolean);
 
 export const mocks: ElementMocks = {
