@@ -61,11 +61,11 @@
 
 <script lang="ts" setup>
 import { cloneDeep, isNumber, last, pullAt, toNumber } from 'lodash-es';
-import { computed } from 'vue';
 import type {
   Element,
   ElementData,
 } from '@tailor-cms/ce-numerical-response-manifest';
+import { computed } from 'vue';
 
 const props = defineProps<{
   element: Element;
