@@ -35,7 +35,7 @@ const emit = defineEmits<{
 
 const initializeResponse = () =>
   cloneDeep(props.userState?.response) ??
-  Array(props.element.data.prefixes.length).fill(0);
+  Array(props.element.data.prefixes.length).fill(undefined);
 
 const isSubmitted = ref(!!props.userState?.isSubmitted);
 const response = ref<any[]>(initializeResponse());

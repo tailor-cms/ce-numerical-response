@@ -32,9 +32,7 @@ export const initState: DataInitializer = (config): ElementData => {
 export const version = '1.0';
 
 export const isEmpty = (data: ElementData): boolean =>
-  !data.question?.length ||
-  !data.prefixes?.some(Boolean) ||
-  !data.suffixes?.some(Boolean);
+  !data.question?.length || !data.correct?.some(Boolean);
 
 export const mocks: ElementMocks = {
   displayContexts: [

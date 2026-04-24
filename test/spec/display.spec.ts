@@ -49,6 +49,13 @@ test.describe('With answers set', () => {
     await expect(display.inputs).toHaveCount(2);
   });
 
+  test('Renders configured prefixes and suffixes', async ({ page }) => {
+    const display = new Display(page);
+    await expect(display.editor.getByText('$')).toBeVisible();
+    await expect(display.editor.getByText('USD')).toBeVisible();
+    await expect(display.editor.getByText('items')).toBeVisible();
+  });
+
   test('Typing and submitting locks the inputs', async ({ page }) => {
     const display = new Display(page);
     const form = new pom.DisplayQuestionForm(display.el);
@@ -65,7 +72,9 @@ test.describe('With answers set', () => {
     await display.inputs.nth(0).fill('42');
     await display.inputs.nth(1).fill('7');
     await form.submit();
-    await expect(display.editor.locator('.mdi-check-circle')).toHaveCount(2);
+    await expect(
+      display.editor.locator('.v-number-input .mdi-check-circle'),
+    ).toHaveCount(2);
   });
 
   test('Submitting a wrong value shows an error icon', async ({ page }) => {
