@@ -46,3 +46,11 @@ test.describe('Answer management', () => {
     await expect(edit.correctInputs).toHaveCount(1);
   });
 });
+
+test.describe('Readonly mode', () => {
+  test('Hides add-answer control', async ({ page }) => {
+    const edit = new Edit(page);
+    await edit.setReadonly();
+    await expect(edit.addAnswerBtn).not.toBeVisible();
+  });
+});
