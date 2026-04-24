@@ -46,4 +46,3 @@ test.describe('Answer management', () => {
     await expect(edit.correctInputs).toHaveCount(1);
   });
 });
-
