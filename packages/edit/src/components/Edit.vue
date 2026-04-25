@@ -1,12 +1,8 @@
 <template>
-  <QuestionContainer
-    v-bind="{ elementData, embedElementConfig, isReadonly }"
-    :show-feedback="false"
-    @update="emit('update', $event)"
-  >
-    <div class="text-subtitle-2 mb-2">Answers</div>
+  <div class="tce-numerical-response">
+    <div class="text-title-small mb-2">Answers</div>
     <VSlideYTransition group>
-      <div v-for="(_, i) in elementData.correct" :key="i" class="d-flex mb-2">
+      <div v-for="(_, i) in answerCount" :key="i" class="d-flex mb-2">
         <VRow>
           <VCol cols="3">
             <VTextField
@@ -19,7 +15,7 @@
           </VCol>
           <VCol cols="6">
             <VNumberInput
-              :model-value="elementData.correct[i]"
+              :model-value="elementData.correct?.[i]"
               :readonly="isReadonly"
               :rules="[(val: number) => isNumber(val) || 'Value is required']"
               control-variant="split"
@@ -44,33 +40,32 @@
           aria-label="Remove answer"
           class="my-3 ml-4"
           color="primary-darken-4"
+          icon="mdi-close"
           size="x-small"
           variant="text"
-          icon
           @click="removeAnswer(i)"
-        >
-          <VIcon icon="mdi-close" size="large" />
-        </VBtn>
+        />
       </div>
     </VSlideYTransition>
     <div v-if="!isReadonly" class="d-flex justify-center mb-4">
       <VBtn
         color="primary-darken-4"
         prepend-icon="mdi-plus"
+        text="Add Answer"
         variant="text"
         @click="addAnswer"
-      >
-        Add Answer
-      </VBtn>
+      />
     </div>
-  </QuestionContainer>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { cloneDeep, isNumber, last, pullAt, toNumber } from 'lodash-es';
-import { computed, defineEmits, defineProps } from 'vue';
-import { Element } from '@tailor-cms/ce-numerical-response-manifest';
-import { QuestionContainer } from '@tailor-cms/core-components';
+import type {
+  Element,
+  ElementData,
+} from '@tailor-cms/ce-numerical-response-manifest';
+import { computed } from 'vue';
 
 const props = defineProps<{
   element: Element;
@@ -79,19 +74,32 @@ const props = defineProps<{
   isFocused: boolean;
   isReadonly: boolean;
 }>();
-const emit = defineEmits(['save', 'update']);
+
+const emit = defineEmits<{
+  update: [data: Partial<ElementData>];
+}>();
 
 const elementData = computed(() => props.element.data);
+const answerCount = computed(
+  () =>
+    elementData.value.correct?.length ??
+    elementData.value.prefixes?.length ??
+    0,
+);
 const canRemoveAnswer = computed(
-  () => !props.isReadonly && elementData.value.correct.length > 1,
+  () => !props.isReadonly && answerCount.value > 1,
 );
 
 const addAnswer = () => {
   const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
   prefixes.push('');
   suffixes.push('');
-  correct.push(0);
-  emit('update', { correct, prefixes, suffixes });
+  const nextCorrect = correct ? [...correct, 0] : undefined;
+  emit('update', {
+    prefixes,
+    suffixes,
+    ...(nextCorrect && { correct: nextCorrect }),
+  });
 };
 
 const updateAnswer = (
@@ -103,17 +111,29 @@ const updateAnswer = (
     if (last(value) === '.') return;
     value = toNumber(value) || value;
   }
-  const values = cloneDeep(elementData.value[key]);
+  const source = elementData.value[key];
+  if (!source) return;
+  const values = cloneDeep(source) as any[];
   values[index] = value;
   emit('update', { [key]: values });
 };
 
 const removeAnswer = (index: number) => {
-  if (elementData.value.correct.length <= 1) return;
+  if (answerCount.value <= 1) return;
   const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
   pullAt(prefixes, index);
   pullAt(suffixes, index);
-  pullAt(correct, index);
-  emit('update', { correct, prefixes, suffixes });
+  if (correct) pullAt(correct, index);
+  emit('update', {
+    prefixes,
+    suffixes,
+    ...(correct && { correct }),
+  });
 };
 </script>
+
+<style lang="scss" scoped>
+.tce-numerical-response {
+  text-align: left;
+}
+</style>
