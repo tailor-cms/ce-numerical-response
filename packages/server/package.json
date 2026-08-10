@@ -2,6 +2,13 @@
   "name": "@tailor-cms/ce-numerical-response-server",
   "description": "Tailor CMS numerical response server component",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tailor-cms/ce-numerical-response.git",
+    "directory": "packages/server"
+  },
+  "homepage": "https://github.com/tailor-cms/ce-numerical-response#readme",
+  "bugs": "https://github.com/tailor-cms/ce-numerical-response/issues",
   "type": "module",
   "version": "2.0.2",
   "exports": {

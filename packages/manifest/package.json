@@ -2,6 +2,13 @@
   "name": "@tailor-cms/ce-numerical-response-manifest",
   "description": "Tailor CMS numerical response manifest",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tailor-cms/ce-numerical-response.git",
+    "directory": "packages/manifest"
+  },
+  "homepage": "https://github.com/tailor-cms/ce-numerical-response#readme",
+  "bugs": "https://github.com/tailor-cms/ce-numerical-response/issues",
   "type": "module",
   "version": "2.0.2",
   "exports": {
