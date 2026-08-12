@@ -39,9 +39,9 @@
           v-if="canRemoveAnswer"
           aria-label="Remove answer"
           class="my-3 ml-4"
-          color="primary-darken-4"
+          density="comfortable"
           icon="mdi-close"
-          size="x-small"
+          size="small"
           variant="text"
           @click="removeAnswer(i)"
         />
@@ -49,7 +49,6 @@
     </VSlideYTransition>
     <div v-if="!isReadonly" class="d-flex justify-center mb-4">
       <VBtn
-        color="primary-darken-4"
         prepend-icon="mdi-plus"
         text="Add Answer"
         variant="text"
