@@ -8,6 +8,7 @@ export interface ElementData extends common.ElementConfig {
   suffixes: string[];
   correct?: number[];
   hint: string;
+  feedback?: common.QuestionFeedback;
 }
 
 export type DataInitializer = common.DataInitializer<ElementData>;
