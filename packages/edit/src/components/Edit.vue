@@ -1,59 +1,78 @@
 <template>
-  <div class="tce-numerical-response">
-    <div class="text-title-small mb-2">Answers</div>
-    <VSlideYTransition group>
-      <div v-for="(_, i) in answerCount" :key="i" class="d-flex mb-2">
-        <VRow>
-          <VCol cols="3">
-            <VTextField
-              :model-value="elementData.prefixes[i]"
-              :readonly="isReadonly"
-              placeholder="Prefix..."
-              variant="outlined"
-              @update:model-value="updateAnswer('prefixes', $event, i)"
-            />
-          </VCol>
-          <VCol cols="6">
-            <VNumberInput
-              :model-value="elementData.correct?.[i]"
-              :readonly="isReadonly"
-              :rules="[(val: number) => isNumber(val) || 'Value is required']"
-              control-variant="split"
-              placeholder="Correct value..."
-              type="number"
-              variant="outlined"
-              @update:model-value="updateAnswer('correct', $event, i)"
-            />
-          </VCol>
-          <VCol cols="3">
-            <VTextField
-              :model-value="elementData.suffixes[i]"
-              :readonly="isReadonly"
-              placeholder="Suffix..."
-              variant="outlined"
-              @update:model-value="updateAnswer('suffixes', $event, i)"
-            />
-          </VCol>
-        </VRow>
-        <VBtn
-          v-if="canRemoveAnswer"
-          aria-label="Remove answer"
-          class="my-3 ml-4"
-          density="comfortable"
-          icon="mdi-close"
-          size="small"
-          variant="text"
-          @click="removeAnswer(i)"
-        />
-      </div>
-    </VSlideYTransition>
-    <div v-if="!isReadonly" class="d-flex justify-center mb-4">
-      <VBtn
-        prepend-icon="mdi-plus"
-        text="Add Answer"
-        variant="text"
-        @click="addAnswer"
+  <div class="tce-numerical-response mb-6">
+    <div class="text-label-large mb-2">Answers</div>
+    <div class="mb-4">
+      <VSlideYTransition group>
+        <div
+          v-for="(_, i) in answerCount"
+          :key="i"
+          class="d-flex align-center ga-2 mb-2"
+        >
+          <VAvatar
+            :text="String(i + 1)"
+            class="text-label-medium font-weight-semibold mr-1"
+            color="surface-container-highest"
+            rounded="lg"
+            size="small"
+          />
+          <VTextField
+            :model-value="elementData.prefixes[i]"
+            :readonly="isReadonly"
+            density="comfortable"
+            placeholder="Prefix..."
+            variant="outlined"
+            hide-details
+            @update:model-value="updateAnswer('prefixes', $event, i)"
+          />
+          <VNumberInput
+            :model-value="elementData.correct?.[i]"
+            :readonly="isReadonly"
+            :rules="[(val: number) => isNumber(val) || 'Value is required']"
+            control-variant="split"
+            density="comfortable"
+            placeholder="Correct value..."
+            type="number"
+            variant="outlined"
+            hide-details
+            @update:model-value="updateAnswer('correct', $event, i)"
+          />
+          <VTextField
+            :model-value="elementData.suffixes[i]"
+            :readonly="isReadonly"
+            density="comfortable"
+            placeholder="Suffix..."
+            variant="outlined"
+            hide-details
+            @update:model-value="updateAnswer('suffixes', $event, i)"
+          />
+          <VBtn
+            v-if="!isReadonly"
+            :disabled="!canRemoveAnswer"
+            aria-label="Remove answer"
+            class="ml-1"
+            density="comfortable"
+            icon="mdi-close"
+            size="small"
+            variant="text"
+            @click="removeAnswer(i)"
+          />
+        </div>
+      </VSlideYTransition>
+      <VInput
+        :rules="valuesValidation"
+        :validation-value="elementData.correct"
+        hide-details="auto"
       />
+      <div v-if="!isReadonly" class="d-flex align-center ga-2 mt-2">
+        <div class="d-flex flex-grow-1 justify-center">
+          <VBtn
+            prepend-icon="mdi-plus"
+            text="Add Answer"
+            variant="text"
+            @click="addAnswer"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +107,10 @@ const answerCount = computed(
 const canRemoveAnswer = computed(
   () => !props.isReadonly && answerCount.value > 1,
 );
+
+const valuesValidation = [
+  (val?: number[]) => !val || val.every(isNumber) || 'All values are required',
+];
 
 const addAnswer = () => {
   const { correct, prefixes, suffixes } = cloneDeep(elementData.value);
