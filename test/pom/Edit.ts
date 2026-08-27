@@ -13,9 +13,9 @@ export class Edit extends pom.EditPanel {
     super(page);
     this.form = new pom.EditQuestionForm(this.el);
     this.root = this.form.el.locator('.tce-numerical-response');
-    this.prefixInputs = this.root.getByPlaceholder('Prefix...');
+    this.prefixInputs = this.root.getByPlaceholder('Prefix');
     this.correctInputs = this.root.getByPlaceholder('Correct value...');
-    this.suffixInputs = this.root.getByPlaceholder('Suffix...');
+    this.suffixInputs = this.root.getByPlaceholder('Suffix');
     this.addAnswerBtn = this.root.getByRole('button', { name: 'Add Answer' });
   }
 
