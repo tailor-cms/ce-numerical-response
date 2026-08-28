@@ -1,5 +1,13 @@
 # @tailor-cms/ce-numerical-response-server
 
+## 2.1.2
+
+### Patch Changes
+
+- Tweak spacings.
+- Updated dependencies
+  - @tailor-cms/ce-numerical-response-manifest@2.1.2
+
 ## 2.1.1
 
 ### Patch Changes
