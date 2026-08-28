@@ -1,7 +1,7 @@
 <template>
   <div class="tce-numerical-response mb-6">
     <div class="text-label-large mb-2">Answers</div>
-    <div class="mb-4">
+    <div class="mx-2">
       <VSlideYTransition group>
         <div
           v-for="(_, i) in answerCount"
